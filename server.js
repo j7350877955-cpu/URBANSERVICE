@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 1. DATABASE CONNECTION
-const mongoURI = "mongodb+srv://Aryanpopalghat:Aryanpopalghat23@urbanservice.w3smd8n.mongodb.net/?appName=urbanservice"; 
+// 1. DATABASE CONNECTION (Replace with your actual string!)
+const mongoURI = "mongodb+srv://admin:YOUR_PASSWORD@cluster0.xxxx.mongodb.net/urbanservice?retryWrites=true&w=majority"; 
 
 mongoose.connect(mongoURI)
     .then(() => console.log("✅ MongoDB Connected Successfully!"))
@@ -41,15 +41,13 @@ app.get('/api/workers', async (req, res) => {
 app.post('/api/apply', async (req, res) => {
     try {
         const { workerName, workerService, workerPhone, workerLat, workerLng } = req.body;
-        if(!workerName || !workerPhone) return res.status(400).json({ error: "Missing fields" });
-        
         const newWorker = new Worker({
             name: workerName, service: workerService, phone: workerPhone,
             lat: parseFloat(workerLat) || 28.61, lng: parseFloat(workerLng) || 77.20
         });
         await newWorker.save();
-        res.status(201).json({ message: "Success! You are now live on the map." });
-    } catch (err) { res.status(500).json({ error: err.message }); }
+        res.status(201).json({ message: "Success! You are live on the map." });
+    } catch (err) { res.status(500).json({ error: "Database error. Check Connection." }); }
 });
 
 app.post('/api/bookings', async (req, res) => {
